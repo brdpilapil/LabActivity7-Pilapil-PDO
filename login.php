@@ -13,30 +13,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($password)) $errors[] = "Password field is required.";
 
     if (empty($errors)) {
-        try {
-            // Begin Transaction
-            $pdo->beginTransaction();
+        $pdo->beginTransaction();
 
-            // Prepared Statement: Find user by email
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch();
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
 
-            $pdo->commit();
+        $pdo->commit();
 
-            if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
-                header("Location: index.php");
-                exit;
-            } else {
-                $errors[] = "Invalid email or password credentials.";
-            }
-        } catch (Exception $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
-            $errors[] = "An error occurred during authentication.";
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
+            header("Location: index.php");
+            exit;
+        } else {
+            $errors[] = "Invalid email or password credentials.";
         }
     }
 }

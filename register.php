@@ -21,10 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         try {
-            // Begin Transaction
             $pdo->beginTransaction();
 
-            // Prepared Statement 1: Check existing email
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->execute([$email]);
 
@@ -32,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = "Email address is already registered.";
                 $pdo->rollBack();
             } else {
-                // Prepared Statement 2: Insert new user
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$first_name, $last_name, $email, $hashed_password]);

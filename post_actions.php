@@ -31,13 +31,12 @@ elseif ($action === 'edit') {
         try {
             $pdo->beginTransaction();
 
-            // Prepared Statement 1: Verify ownership
+    
             $stmt = $pdo->prepare("SELECT created_by FROM posts WHERE id = ?");
             $stmt->execute([$post_id]);
             $post = $stmt->fetch();
 
             if ($post && $post['created_by'] == $_SESSION['user_id']) {
-                // Prepared Statement 2: Update content
                 $update = $pdo->prepare("UPDATE posts SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
                 $update->execute([$content, $post_id]);
             }
@@ -58,13 +57,11 @@ elseif ($action === 'delete') {
         try {
             $pdo->beginTransaction();
 
-            // Prepared Statement 1: Verify ownership
             $stmt = $pdo->prepare("SELECT created_by FROM posts WHERE id = ?");
             $stmt->execute([$post_id]);
             $post = $stmt->fetch();
 
             if ($post && $post['created_by'] == $_SESSION['user_id']) {
-                // Prepared Statement 2: Delete post
                 $delete = $pdo->prepare("DELETE FROM posts WHERE id = ?");
                 $delete->execute([$post_id]);
             }

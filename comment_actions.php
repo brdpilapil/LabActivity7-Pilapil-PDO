@@ -33,13 +33,11 @@ elseif ($action === 'edit') {
         try {
             $pdo->beginTransaction();
 
-            // Prepared Statement 1: Verify ownership
             $stmt = $pdo->prepare("SELECT user_id FROM comments WHERE id = ?");
             $stmt->execute([$comment_id]);
             $comment = $stmt->fetch();
 
             if ($comment && $comment['user_id'] == $_SESSION['user_id']) {
-                // Prepared Statement 2: Update content
                 $update = $pdo->prepare("UPDATE comments SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
                 $update->execute([$content, $comment_id]);
             }
@@ -60,13 +58,11 @@ elseif ($action === 'delete') {
         try {
             $pdo->beginTransaction();
 
-            // Prepared Statement 1: Verify ownership
             $stmt = $pdo->prepare("SELECT user_id FROM comments WHERE id = ?");
             $stmt->execute([$comment_id]);
             $comment = $stmt->fetch();
 
             if ($comment && $comment['user_id'] == $_SESSION['user_id']) {
-                // Prepared Statement 2: Delete comment
                 $delete = $pdo->prepare("DELETE FROM comments WHERE id = ?");
                 $delete->execute([$comment_id]);
             }

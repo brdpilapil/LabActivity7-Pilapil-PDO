@@ -3,7 +3,6 @@ require_once 'db.php';
 require_once 'auth.php';
 require_auth();
 
-// Fetch posts sorted by newest first
 $posts_stmt = $pdo->query("
     SELECT p.*, u.first_name, u.last_name 
     FROM posts p 
@@ -12,7 +11,6 @@ $posts_stmt = $pdo->query("
 ");
 $posts = $posts_stmt->fetchAll();
 
-// Fetch all comments mapped by post_id
 $comments_stmt = $pdo->query("
     SELECT c.*, u.first_name, u.last_name 
     FROM comments c 
